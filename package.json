@@ -1,0 +1,16 @@
+{
+  "name": "dst-uswds-compile",
+  "description": "Design System Team's copy of the uswds-compile tool",
+  "main": "gulpfile.js",
+  "scripts": {
+    "compile": "npx gulp compile",
+    "compileIcons": "npx gulp compileIcons && cp ./assets/uswds/img/sprite.svg ./sprite.svg",
+    "copyImages": "npx gulp copyImages",
+    "deploy": "./update-other-repos.sh",
+    "init": "npx gulp init && npx gulp copyImages"
+  },
+  "dependencies": {
+    "@uswds/uswds": "^3.8.0",
+    "@uswds/compile": "^1.1.0"
+  }
+}
