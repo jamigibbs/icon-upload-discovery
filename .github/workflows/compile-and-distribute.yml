@@ -79,6 +79,7 @@ jobs:
         uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.DOWNSTREAM_REPO_TOKEN }}
+          add-paths: src/img/sprite.svg
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: true
           title: 'chore: update sprite.svg'
