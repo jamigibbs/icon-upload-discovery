@@ -9,6 +9,7 @@
 
 const ALLOWED_ORIGINS = [
   'https://department-of-veterans-affairs.github.io',
+  'https://jamigibbs.github.io',
   'http://localhost:3000',
   'http://127.0.0.1:3000'
 ];

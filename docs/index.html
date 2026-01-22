@@ -202,7 +202,7 @@
     // CONFIGURATION
     // =====================================================
     const CLIENT_ID = 'Iv23li2v4JgQwaVgq5Lm';
-    const WORKER_URL = 'github-oauth-proxy.vhatvhdesignsystemteam.workers.dev';
+    const WORKER_URL = 'https://github-oauth-proxy.vhatvhdesignsystemteam.workers.dev';
     const REPO_OWNER = 'jamigibbs';
     const REPO_NAME = 'icon-upload-discovery';
     const ICONS_PATH = 'assets/icons';
@@ -282,7 +282,9 @@
         });
 
         if (!response.ok) {
-          throw new Error('Failed to start device flow');
+          const errorText = await response.text();
+          console.error('Worker response:', response.status, errorText);
+          throw new Error(`Failed to start device flow: ${response.status} - ${errorText}`);
         }
 
         const data = await response.json();
