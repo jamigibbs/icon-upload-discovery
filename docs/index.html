@@ -331,12 +331,10 @@
           });
 
           const data = await response.json();
-          console.log('OAuth response:', data);
 
           if (data.access_token) {
             clearInterval(pollInterval);
             accessToken = data.access_token;
-            console.log('Access token received:', accessToken ? 'Yes' : 'No');
             await fetchUser();
           } else if (data.error === 'authorization_pending') {
             // User hasn't authorized yet, keep polling
@@ -439,24 +437,6 @@
       const commit = await commitRes.json();
       const baseTreeSha = commit.tree.sha;
 
-      // Debug: Check token scopes and permissions
-      const tokenCheckRes = await fetch('https://api.github.com/user', { headers });
-      const scopes = tokenCheckRes.headers.get('X-OAuth-Scopes');
-      const acceptedScopes = tokenCheckRes.headers.get('X-Accepted-OAuth-Scopes');
-      console.log('=== Token Debug Info ===');
-      console.log('Token scopes:', scopes || '(empty)');
-      console.log('Accepted scopes:', acceptedScopes || '(none required)');
-      console.log('Token prefix:', accessToken ? accessToken.substring(0, 10) + '...' : 'none');
-      
-      // Check if we have repo access (either via scope or GitHub App)
-      const repoPermCheck = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/collaborators/${currentUser.login}/permission`, { headers });
-      if (repoPermCheck.ok) {
-        const permData = await repoPermCheck.json();
-        console.log('User permission level:', permData.permission);
-      } else {
-        console.log('Could not check permission level:', repoPermCheck.status);
-      }
-
       // 3. Create blobs for each file
       showStatus('Uploading files...', 'loading');
       const treeItems = [];
@@ -468,7 +448,6 @@
         });
         if (!blobRes.ok) {
           const errorData = await blobRes.json().catch(() => ({ message: 'Unknown error' }));
-          console.error(`Blob creation failed for ${name}:`, errorData);
           throw new Error(`Failed to upload ${name}: ${errorData.message || blobRes.statusText} (${blobRes.status})`);
         }
         const blob = await blobRes.json();
