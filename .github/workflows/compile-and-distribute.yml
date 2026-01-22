@@ -82,10 +82,13 @@ jobs:
           add-paths: src/img/sprite.svg
           branch: ${{ env.BRANCH_NAME }}
           delete-branch: true
+          draft: true
           title: 'chore: update sprite.svg'
-          body: |
-            Automated PR to update `sprite.svg` from [dst-uswds-compile](https://github.com/department-of-veterans-affairs/dst-uswds-compile).
+          body: |            
+            This PR updates the icons sprite sheet with the latest compiled icons from the [icon-upload-discovery](https://github.com/department-of-veterans-affairs/icon-upload-discovery).
             
-            Triggered by: ${{ github.event.head_commit.message || 'Manual workflow dispatch' }}
-            Source commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            **Source Details:**
+            - Triggered by: [@${{ github.actor }}](https://github.com/${{ github.actor }})
+            - Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}
+            - Workflow Run: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
           commit-message: 'chore: update sprite.svg'
