@@ -446,7 +446,11 @@
           headers,
           body: JSON.stringify({ content, encoding: 'base64' })
         });
-        if (!blobRes.ok) throw new Error(`Failed to upload ${name}`);
+        if (!blobRes.ok) {
+          const errorData = await blobRes.json().catch(() => ({ message: 'Unknown error' }));
+          console.error(`Blob creation failed for ${name}:`, errorData);
+          throw new Error(`Failed to upload ${name}: ${errorData.message || blobRes.statusText} (${blobRes.status})`);
+        }
         const blob = await blobRes.json();
         treeItems.push({
           path: `${ICONS_PATH}/${name}`,
