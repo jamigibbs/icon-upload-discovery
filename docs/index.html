@@ -331,10 +331,12 @@
           });
 
           const data = await response.json();
+          console.log('OAuth response:', data);
 
           if (data.access_token) {
             clearInterval(pollInterval);
             accessToken = data.access_token;
+            console.log('Access token received:', accessToken ? 'Yes' : 'No');
             await fetchUser();
           } else if (data.error === 'authorization_pending') {
             // User hasn't authorized yet, keep polling
