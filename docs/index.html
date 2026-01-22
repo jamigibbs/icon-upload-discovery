@@ -439,14 +439,22 @@
       const commit = await commitRes.json();
       const baseTreeSha = commit.tree.sha;
 
-      // Debug: Check token scopes
+      // Debug: Check token scopes and permissions
       const tokenCheckRes = await fetch('https://api.github.com/user', { headers });
-      if (tokenCheckRes.ok) {
-        const scopes = tokenCheckRes.headers.get('X-OAuth-Scopes');
-        console.log('Current token scopes:', scopes);
-        if (!scopes || !scopes.includes('repo')) {
-          throw new Error(`Token missing required 'repo' scope. Current scopes: ${scopes}`);
-        }
+      const scopes = tokenCheckRes.headers.get('X-OAuth-Scopes');
+      const acceptedScopes = tokenCheckRes.headers.get('X-Accepted-OAuth-Scopes');
+      console.log('=== Token Debug Info ===');
+      console.log('Token scopes:', scopes || '(empty)');
+      console.log('Accepted scopes:', acceptedScopes || '(none required)');
+      console.log('Token prefix:', accessToken ? accessToken.substring(0, 10) + '...' : 'none');
+      
+      // Check if we have repo access (either via scope or GitHub App)
+      const repoPermCheck = await fetch(`https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/collaborators/${currentUser.login}/permission`, { headers });
+      if (repoPermCheck.ok) {
+        const permData = await repoPermCheck.json();
+        console.log('User permission level:', permData.permission);
+      } else {
+        console.log('Could not check permission level:', repoPermCheck.status);
       }
 
       // 3. Create blobs for each file
