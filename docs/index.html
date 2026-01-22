@@ -437,6 +437,16 @@
       const commit = await commitRes.json();
       const baseTreeSha = commit.tree.sha;
 
+      // Debug: Check token scopes
+      const tokenCheckRes = await fetch('https://api.github.com/user', { headers });
+      if (tokenCheckRes.ok) {
+        const scopes = tokenCheckRes.headers.get('X-OAuth-Scopes');
+        console.log('Current token scopes:', scopes);
+        if (!scopes || !scopes.includes('repo')) {
+          throw new Error(`Token missing required 'repo' scope. Current scopes: ${scopes}`);
+        }
+      }
+
       // 3. Create blobs for each file
       showStatus('Uploading files...', 'loading');
       const treeItems = [];
